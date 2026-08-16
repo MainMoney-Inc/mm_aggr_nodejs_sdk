@@ -1,0 +1,10 @@
+---
+description: TypeScript standards for the Node SDK
+globs: "**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# TypeScript
+
+- Strict `tsconfig`. Export public types from `src/index.ts`.
+- This package is server-side. Do not use it in the browser; use the JS/TS frontend SDK.
