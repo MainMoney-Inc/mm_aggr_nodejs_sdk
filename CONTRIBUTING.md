@@ -31,5 +31,8 @@ npm run build
 ## Pull requests
 
 - Include tests for behavior changes.
-- Do not invent merchant API endpoints; use `/api/v1/schema/merchants/`.
+- Do not invent merchant API endpoints. Implement from the pinned OpenAPI in
+  the contrib hub (`contract/openapi/merchants.openapi.yaml`, checkout path
+  `contrib/contract/` from `mm_aggregator`). Cross-check live
+  `/api/v1/schema/merchants/` if the pin may be behind.
 - Do not commit secrets.

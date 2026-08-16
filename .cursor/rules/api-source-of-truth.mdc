@@ -5,7 +5,9 @@ alwaysApply: true
 
 # API source of truth
 
-- Implement only operations documented at `/api/v1/schema/merchants/` and
-  `/api/v1/docs/merchants/` on the MM Aggregator.
-- Do not invent paths, headers, or error codes.
+- Implement only operations in the contrib hub pin
+  `contract/openapi/merchants.openapi.yaml` (nested checkout:
+  `contrib/contract/` from `mm_aggregator`) and `/api/v1/schema/merchants/`.
+- Cross-check the live schema if the pin may be behind. Do not invent paths,
+  headers, or error codes.
 - Never put merchant API keys in frontend or plugin JavaScript.
