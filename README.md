@@ -20,19 +20,49 @@ the browser.
 npm install @mainmoney/sdk
 ```
 
+Until the package is on npm, install from GitHub:
+
+```bash
+npm install github:MainMoney-Inc/mm_aggr_nodejs_sdk
+```
+
 ## Quick start
 
 ```ts
-import { AggregatorClient } from "@mainmoney/sdk";
+import { Client } from "@mainmoney/sdk";
 
-const client = new AggregatorClient({
-  baseUri: "https://your-aggregator.example/api/v1/",
-  apiKey: process.env.MM_API_KEY ?? "",
+const client = new Client({
+  clientId: process.env.MM_CLIENT_ID ?? "",
+  secret: process.env.MM_API_SECRET ?? "",
+  test: true, // https://testaggregator.mainmoney.net — omit for production
 });
+
+const deposit = await client.deposits.create(
+  {
+    provider_code: "VODACOM_MPESA_COD",
+    reference: "ORDER-123",
+    amount: "100.00",
+    currency: "USD",
+    customer_phone: "243820000000",
+  },
+  "ORDER-123",
+);
 ```
 
-See `/api/v1/docs/merchants/` on your aggregator host. Payment methods will be
-added in a later release.
+Defaults: production `https://aggregator.mainmoney.net/api/v1/`, test
+`https://testaggregator.mainmoney.net/api/v1/`. Pass `baseUri` only to override.
+Configure credentials from your environment. Merchant API docs:
+`/api/v1/docs/merchants/` on the aggregator host.
+
+Exchange `client_id` and `secret` for a Bearer access token is handled by the
+SDK. There is no `X-API-KEY` header. Reuse the same `reference` and optional
+`Idempotency-Key` when retrying a create. Amounts are decimal strings; do not
+mix currencies.
+
+Verify inbound webhooks with
+`client.webhooks.verify(rawBody, signature, secret)`.
+
+Do not send merchant API keys to the browser.
 
 ## License
 

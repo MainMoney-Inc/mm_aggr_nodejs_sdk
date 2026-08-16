@@ -1,12 +1,11 @@
-export interface AggregatorClientOptions {
-  baseUri: string;
-  apiKey: string;
-}
+export { Client, type ClientOptions } from "./client.js";
+export {
+  AggregatorException,
+  ApiException,
+  AuthenticationException,
+  WebhookSignatureException,
+} from "./errors.js";
+export type { HttpClient, RequestOptions } from "./http/http-client.js";
+export type { JsonObject, JsonValue } from "./http/transport.js";
 
-export class AggregatorClient {
-  readonly baseUri: string;
-
-  constructor(options: AggregatorClientOptions) {
-    this.baseUri = options.baseUri;
-  }
-}
+export const VERSION = "0.1.0";
