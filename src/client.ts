@@ -5,6 +5,7 @@ import { FetchHttpClient } from "./http/fetch-client.js";
 import type { HttpClient } from "./http/http-client.js";
 import { Transport } from "./http/transport.js";
 import { AmountLimits } from "./resources/amount-limits.js";
+import { CheckoutPreferences } from "./resources/checkout-preferences.js";
 import { Countries } from "./resources/countries.js";
 import { Customers } from "./resources/customers.js";
 import { Deposits } from "./resources/deposits.js";
@@ -44,6 +45,7 @@ export class Client {
   readonly providers: Providers;
   readonly fees: Fees;
   readonly amountLimits: AmountLimits;
+  readonly checkoutPreferences: CheckoutPreferences;
   readonly webhooks: WebhookVerifier;
 
   private readonly _baseUri: string;
@@ -74,6 +76,7 @@ export class Client {
     this.providers = new Providers(transport);
     this.fees = new Fees(transport);
     this.amountLimits = new AmountLimits(transport);
+    this.checkoutPreferences = new CheckoutPreferences(transport);
     this.webhooks = new WebhookVerifier();
   }
 

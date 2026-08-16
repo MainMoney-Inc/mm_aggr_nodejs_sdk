@@ -230,4 +230,29 @@ describe("Client", () => {
     });
     expect(client.baseUri).toBe(Client.PRODUCTION_BASE_URI);
   });
+
+  it("loads checkout preferences from the general merchant API", async () => {
+    const { client, mock } = clientWithMock([
+      tokenResponse(),
+      new HttpResponse(
+        200,
+        JSON.stringify({
+          success: true,
+          response_data: {
+            primary_color: "#ff3366",
+            secondary_color: "#5f5e5e",
+            accent_color: "#b90040",
+            background_color: "#f8f9fb",
+            locale: "en",
+            logo: null,
+          },
+          message: "ok",
+        }),
+      ),
+    ]);
+
+    const prefs = await client.checkoutPreferences.get();
+    expect(prefs).toMatchObject({ primary_color: "#ff3366", locale: "en" });
+    expect(mock.history[1].uri).toContain("/manage/general/checkout-preferences/");
+  });
 });
