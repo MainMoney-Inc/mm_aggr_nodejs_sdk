@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+if [[ ! -f "$ROOT/data/initial.sqlite3" ]]; then
+  echo "Missing data/initial.sqlite3" >&2
+  exit 1
+fi
+cp "$ROOT/data/initial.sqlite3" "$ROOT/db.sqlite3"
+echo "Restored db.sqlite3 from data/initial.sqlite3"

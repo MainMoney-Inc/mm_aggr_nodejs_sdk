@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+if [[ ! -f "$ROOT/db.sqlite3" ]]; then
+  echo "Missing db.sqlite3 — run yarn seed first." >&2
+  exit 1
+fi
+mkdir -p "$ROOT/data"
+cp "$ROOT/db.sqlite3" "$ROOT/data/initial.sqlite3"
+echo "Wrote data/initial.sqlite3 (commit only when schema or catalog logic changes)"

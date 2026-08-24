@@ -36,3 +36,5 @@ npm run build
   `contrib/contract/` from `mm_aggregator`). Cross-check live
   `/api/v1/schema/merchants/` if the pin may be behind.
 - Do not commit secrets.
+- Local demos live under `examples/`. Working SQLite (`db.sqlite3`) is gitignored;
+  commit `data/initial.sqlite3` only when the mini-shop schema or catalog changes.
