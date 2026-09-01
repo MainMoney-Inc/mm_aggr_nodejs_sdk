@@ -45,6 +45,7 @@ async function dispatch(
     return client.customers.matchProvider(
       query.account_number ?? "",
       query.get_lookup === "true" || query.get_lookup === "1",
+      query.operation_type || undefined,
     );
   }
   if (method === "GET" && route === "amount-limits") {

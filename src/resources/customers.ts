@@ -12,10 +12,11 @@ export class Customers extends Resource {
     return this.transport.post("transactions/customers/kyc/", payload);
   }
 
-  matchProvider(accountNumber: string, getLookup = false): Promise<JsonValue> {
+  matchProvider(accountNumber: string, getLookup = false, operationType?: string): Promise<JsonValue> {
     return this.transport.get("transactions/customers/match-provider/", {
       account_number: accountNumber,
       get_lookup: getLookup ? "true" : null,
+      operation_type: operationType ?? null,
     });
   }
 }
