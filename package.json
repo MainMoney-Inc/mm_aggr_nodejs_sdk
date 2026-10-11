@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Node.js SDK for the MainMoney aggregator merchant API",
   "type": "module",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "author": "MainMoney SARL",
   "homepage": "https://github.com/MainMoney-Inc/mm_aggr_nodejs_sdk",
   "repository": {
