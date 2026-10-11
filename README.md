@@ -1,5 +1,7 @@
 # MainMoney Node.js SDK
 
+[![npm](https://img.shields.io/npm/v/@mainmoneyapp/sdk)](https://www.npmjs.com/package/@mainmoneyapp/sdk) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Server-side TypeScript/JavaScript client for the MainMoney aggregator merchant
 API. Install this package in Node.js backends (Express, Nest, Fastify, Next.js
 Route Handlers).
@@ -18,12 +20,6 @@ the browser.
 
 ```bash
 npm install @mainmoneyapp/sdk
-```
-
-Until the package is on npm, install from GitHub:
-
-```bash
-npm install github:MainMoney-Inc/mm_aggr_nodejs_sdk
 ```
 
 ## Quick start
