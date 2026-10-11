@@ -1,6 +1,6 @@
 {
-  "name": "@mainmoney/sdk",
-  "version": "0.1.0",
+  "name": "@mainmoneyapp/sdk",
+  "version": "0.1.1",
   "description": "Node.js SDK for the MainMoney aggregator merchant API",
   "type": "module",
   "license": "MIT",

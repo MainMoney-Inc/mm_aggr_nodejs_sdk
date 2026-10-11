@@ -8,4 +8,4 @@ export {
 export type { HttpClient, RequestOptions } from "./http/http-client.js";
 export type { JsonObject, JsonValue } from "./http/transport.js";
 
-export const VERSION = "0.1.0";
+export const VERSION = "0.1.1";

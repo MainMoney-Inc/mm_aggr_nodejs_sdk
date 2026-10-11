@@ -1,6 +1,6 @@
 # Express mini-shop
 
-Standalone example that installs [`@mainmoney/sdk`](https://github.com/MainMoney-Inc/mm_aggr_nodejs_sdk)
+Standalone example that installs [`@mainmoneyapp/sdk`](https://github.com/MainMoney-Inc/mm_aggr_nodejs_sdk)
 as a yarn package. Same shop API as the Python and Laravel examples.
 
 Default port: **8004**.
@@ -14,7 +14,7 @@ yarn
 ./scripts/reset-db
 ```
 
-Until npm lists `@mainmoney/sdk`, yarn installs it from GitHub (see `package.json`).
+Until npm lists `@mainmoneyapp/sdk`, yarn installs it from GitHub (see `package.json`).
 
 ```bash
 yarn seed

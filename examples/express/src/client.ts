@@ -1,4 +1,4 @@
-import { Client } from "@mainmoney/sdk";
+import { Client } from "@mainmoneyapp/sdk";
 
 export function getClient(): Client {
   return new Client({

@@ -17,7 +17,7 @@ the browser.
 ## Install
 
 ```bash
-npm install @mainmoney/sdk
+npm install @mainmoneyapp/sdk
 ```
 
 Until the package is on npm, install from GitHub:
@@ -29,7 +29,7 @@ npm install github:MainMoney-Inc/mm_aggr_nodejs_sdk
 ## Quick start
 
 ```ts
-import { Client } from "@mainmoney/sdk";
+import { Client } from "@mainmoneyapp/sdk";
 
 const client = new Client({
   clientId: process.env.MM_CLIENT_ID ?? "",

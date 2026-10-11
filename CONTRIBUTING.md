@@ -23,6 +23,13 @@ npm test
 npm run build
 ```
 
+## npm
+
+The package is `@mainmoneyapp/sdk`. Releases are automated: bump `version` in
+`package.json` and `VERSION` in `src/index.ts`, update `CHANGELOG.md`, then push an
+annotated tag `vX.Y.Z`. The `Publish` workflow publishes to npm with provenance using
+the `NPM_TOKEN` organisation secret. Never commit npm tokens.
+
 ## Branches and commits
 
 - `feature/<name>`, `bugfix/<name>`, `hotfix/<issue>`, `refactor/<description>`
