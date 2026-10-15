@@ -1,6 +1,6 @@
 {
   "name": "@mainmoneyapp/sdk",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Node.js SDK for the MainMoney aggregator merchant API",
   "type": "module",
   "license": "MIT",
@@ -13,8 +13,15 @@
   "bugs": {
     "url": "https://github.com/MainMoney-Inc/mm_aggr_nodejs_sdk/issues"
   },
-  "keywords": ["mainmoney", "payments", "merchant", "sdk"],
-  "engines": { "node": ">=22" },
+  "keywords": [
+    "mainmoney",
+    "payments",
+    "merchant",
+    "sdk"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -23,7 +30,11 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "LICENSE", "README.md"],
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "publishConfig": {
     "access": "public"
   },
