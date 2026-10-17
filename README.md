@@ -51,9 +51,12 @@ Configure credentials from your environment. Merchant API docs:
 `/api/v1/docs/merchants/` on the aggregator host.
 
 Exchange `client_id` and `secret` for a Bearer access token is handled by the
-SDK. There is no `X-API-KEY` header. Reuse the same `reference` and optional
-`Idempotency-Key` when retrying a create. Amounts are decimal strings; do not
-mix currencies.
+SDK. There is no `X-API-KEY` header. Resend the same `reference` and
+`Idempotency-Key` only when retrying the *same* create (same body). When the body
+changes (new phone number, new currency) use a new `Idempotency-Key`; after a
+failed deposit also use a new `reference`, because a failed one stays reserved.
+Derive the key from your checkout session, not from the cart or order. Amounts are
+decimal strings; do not mix currencies.
 
 Verify inbound webhooks with
 `client.webhooks.verify(rawBody, signature, secret)`.

@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 import Database from "better-sqlite3";
 
 import { getClient } from "./client.js";
@@ -5,6 +7,11 @@ import type { CheckoutSession } from "./sessions.js";
 
 type SqliteDb = InstanceType<typeof Database>;
 type ProxyResult = { status: number; body: unknown };
+
+/** One key per checkout session: a refreshed page is a new attempt, a double submit replays the first answer. */
+function idempotencyKey(session: CheckoutSession): string {
+  return `mm-${createHash("sha256").update(session.token).digest("hex").slice(0, 32)}`;
+}
 
 export async function handleProxy(
   db: SqliteDb,
@@ -62,7 +69,7 @@ async function dispatch(
     if (session.lockAmount && session.amount !== null) {
       payload.amount = session.amount;
     }
-    const result = await client.deposits.create(payload, session.reference);
+    const result = await client.deposits.create(payload, idempotencyKey(session));
     markOrder(db, session, "pending");
     return result;
   }
