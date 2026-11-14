@@ -4,6 +4,7 @@ import { ApiException, AuthenticationException } from "../errors.js";
 import type { TokenStore } from "../auth/token-store.js";
 import type { HttpClient, RequestOptions } from "./http-client.js";
 import type { HttpResponse } from "./http-response.js";
+import { trimSlashes } from "./paths.js";
 
 export type JsonValue = Record<string, unknown> | unknown[];
 export type JsonObject = Record<string, unknown>;
@@ -106,7 +107,7 @@ export class Transport {
   }
 
   private url(path: string): string {
-    return `${this.baseUri.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
+    return `${trimSlashes(this.baseUri, { end: true })}/${trimSlashes(path, { start: true })}`;
   }
 }
 

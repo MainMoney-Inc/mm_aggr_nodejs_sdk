@@ -5,6 +5,19 @@ import Database from "better-sqlite3";
 import { getClient } from "./client.js";
 import type { CheckoutSession } from "./sessions.js";
 
+/** Linear-time "/" trim (no regex backtracking on attacker-controlled routes). */
+function trimSlashes(value: string, { start = false, end = false }: { start?: boolean; end?: boolean } = {}): string {
+  let from = 0;
+  let to = value.length;
+  if (start) {
+    while (from < to && value.charCodeAt(from) === 47) from += 1;
+  }
+  if (end) {
+    while (to > from && value.charCodeAt(to - 1) === 47) to -= 1;
+  }
+  return value.slice(from, to);
+}
+
 type SqliteDb = InstanceType<typeof Database>;
 type ProxyResult = { status: number; body: unknown };
 
@@ -22,7 +35,7 @@ export async function handleProxy(
   session: CheckoutSession,
 ): Promise<ProxyResult> {
   try {
-    const payload = await dispatch(db, method.toUpperCase(), route.replace(/^\/+|\/+$/g, ""), query, body, session);
+    const payload = await dispatch(db, method.toUpperCase(), trimSlashes(route, { start: true, end: true }), query, body, session);
     return { status: 200, body: payload };
   } catch (error) {
     const status = typeof (error as { statusCode?: unknown }).statusCode === "number"

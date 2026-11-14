@@ -3,6 +3,7 @@
 import { TokenStore } from "./auth/token-store.js";
 import { FetchHttpClient } from "./http/fetch-client.js";
 import type { HttpClient } from "./http/http-client.js";
+import { trimSlashes } from "./http/paths.js";
 import { Transport } from "./http/transport.js";
 import { AmountLimits } from "./resources/amount-limits.js";
 import { CheckoutPreferences } from "./resources/checkout-preferences.js";
@@ -85,7 +86,7 @@ export class Client {
   }
 
   static normalizeBaseUri(baseUri: string): string {
-    let normalized = baseUri.trim().replace(/\/+$/, "");
+    let normalized = trimSlashes(baseUri.trim(), { end: true });
     if (!normalized.toLowerCase().endsWith("/api/v1")) {
       normalized += "/api/v1";
     }

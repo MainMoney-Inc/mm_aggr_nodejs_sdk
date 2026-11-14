@@ -3,6 +3,7 @@ import { randomBytes } from "node:crypto";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import { rateLimit } from "express-rate-limit";
 
 import { getClient } from "./client.js";
 import { openDb, seedProducts, type Order, type Product, type Transfer } from "./db.js";
@@ -20,6 +21,14 @@ const origins = (process.env.CORS_ORIGINS ?? "http://127.0.0.1:5173,http://127.0
   .map((item) => item.trim())
   .filter(Boolean);
 
+app.use(
+  rateLimit({
+    windowMs: 60_000,
+    limit: Number(process.env.RATE_LIMIT_PER_MINUTE ?? 300),
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
+  }),
+);
 app.use(cors({ origin: origins }));
 app.use(express.json());
 

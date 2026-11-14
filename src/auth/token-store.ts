@@ -2,6 +2,7 @@
 
 import { AuthenticationException } from "../errors.js";
 import type { HttpClient } from "../http/http-client.js";
+import { trimSlashes } from "../http/paths.js";
 import { AccessToken } from "./access-token.js";
 
 export class TokenStore {
@@ -35,7 +36,7 @@ export class TokenStore {
       body.expires_in = this.expiresIn;
     }
 
-    const url = `${this.baseUri.replace(/\/+$/, "")}/auth/tokens/exchange/`;
+    const url = `${trimSlashes(this.baseUri, { end: true })}/auth/tokens/exchange/`;
     const response = await this.http.request("POST", url, {
       headers: {
         Accept: "application/json",
