@@ -8,4 +8,14 @@ export {
 export type { HttpClient, RequestOptions } from "./http/http-client.js";
 export type { JsonObject, JsonValue } from "./http/transport.js";
 
-export const VERSION = "0.1.1";
+export type {
+  PaymentLink,
+  PaymentLinkCreateInput,
+  PaymentLinkListQuery,
+  PaymentLinkMethod,
+  PaymentLinkPage,
+  PaymentLinkRequestOptions,
+  PaymentLinkStatus,
+} from "./resources/payment-links.js";
+
+export const VERSION = "0.2.0";
