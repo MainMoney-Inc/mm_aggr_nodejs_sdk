@@ -93,7 +93,10 @@ await client.paymentLinks.get(link.id, { merchantAccount: "<seller account id>" 
 await client.paymentLinks.cancel(link.id, { merchantAccount: "<seller account id>" });
 ```
 
-The API answers 403 when the seller is unknown, is not yours or is not active.
+Set `merchantAccount` once on the client (`new Client({ ..., merchantAccount })`) to
+make it the default for every supporting call; a per-call value overrides it and
+`{ merchantAccount: null }` sends none. The API answers 403 when the seller is
+unknown, is not yours or is not active. See [MainMoney Rails](mainmoney-rails.md).
 
 ## Errors
 
@@ -107,7 +110,7 @@ try {
 } catch (error) {
   if (error instanceof ApiException) {
     // 400: validation (bad amount, currency, expires_at, methods ...)
-    // 409: conflict, for example the reference is already used or the
+    // 409: the contract lists no error codes for payment links; in practice a reused reference or the
     //      link is in a state that does not allow the action (such as cancelling a paid link)
     // 403: missing PAYMENT_LINK scope, or an invalid X-Merchant-Account seller
   }

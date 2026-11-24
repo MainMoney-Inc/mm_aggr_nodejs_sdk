@@ -1,26 +1,49 @@
-/** Payout operations. */
+/** Payouts (outbound payments). */
 
 import type { JsonObject, JsonValue } from "../http/transport.js";
-import { Resource } from "./resource.js";
+import { Resource, type AccountRequestOptions } from "./resource.js";
 
 export class Payouts extends Resource {
-  create(payload: JsonObject, idempotencyKey?: string | null): Promise<JsonValue> {
-    return this.transport.post("transactions/payouts/", payload, this.idempotencyHeaders(idempotencyKey));
+  /** POST /transactions/payouts/ */
+  create(
+    payload: JsonObject,
+    idempotencyKey?: string | null,
+    options: AccountRequestOptions = {},
+  ): Promise<JsonValue> {
+    return this.transport.post("transactions/payouts/", payload, this.createHeaders(idempotencyKey, options));
   }
 
-  createBusiness(payload: JsonObject, idempotencyKey?: string | null): Promise<JsonValue> {
+  /** POST /transactions/payouts/business/ (beneficiary phone number; scope BUSINESS_PAYOUT). */
+  createBusiness(
+    payload: JsonObject,
+    idempotencyKey?: string | null,
+    options: AccountRequestOptions = {},
+  ): Promise<JsonValue> {
     return this.transport.post(
       "transactions/payouts/business/",
       payload,
-      this.idempotencyHeaders(idempotencyKey),
+      this.createHeaders(idempotencyKey, options),
     );
   }
 
-  createBusinessMerchantAccount(payload: JsonObject, idempotencyKey?: string | null): Promise<JsonValue> {
+  /** POST /transactions/payouts/business/merchant-account/ (provider shortcode; scope BUSINESS_PAYOUT). */
+  createBusinessMerchantAccount(
+    payload: JsonObject,
+    idempotencyKey?: string | null,
+    options: AccountRequestOptions = {},
+  ): Promise<JsonValue> {
     return this.transport.post(
       "transactions/payouts/business/merchant-account/",
       payload,
-      this.idempotencyHeaders(idempotencyKey),
+      this.createHeaders(idempotencyKey, options),
     );
+  }
+
+  /**
+   * POST /transactions/card-payouts/business/merchant-account/. The contract lists no
+   * X-Merchant-Account or Idempotency-Key for this path, so none is sent.
+   */
+  createCardBusinessMerchantAccount(payload: JsonObject): Promise<JsonValue> {
+    return this.transport.post("transactions/card-payouts/business/merchant-account/", payload);
   }
 }

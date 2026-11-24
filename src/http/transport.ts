@@ -22,6 +22,14 @@ export class Transport {
     return this.request("POST", path, body, {}, headers);
   }
 
+  patch(path: string, body: JsonObject = {}, headers: Record<string, string> = {}): Promise<JsonValue> {
+    return this.request("PATCH", path, body, {}, headers);
+  }
+
+  delete(path: string, headers: Record<string, string> = {}): Promise<JsonValue> {
+    return this.request("DELETE", path, null, {}, headers);
+  }
+
   get(path: string, query: QueryParams = {}, headers: Record<string, string> = {}): Promise<JsonValue> {
     return this.request("GET", path, null, query, headers);
   }
