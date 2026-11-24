@@ -47,48 +47,36 @@ const deposit = await client.deposits.create(
 
 Defaults: production `https://aggregator.mainmoney.net/api/v1/`, test
 `https://testaggregator.mainmoney.net/api/v1/`. Pass `baseUri` only to override.
-Configure credentials from your environment. Merchant API docs:
-`/api/v1/docs/merchants/` on the aggregator host.
+The SDK exchanges `client_id` and `secret` for a Bearer token and refreshes it;
+there is no `X-API-KEY` header. Amounts are decimal strings; never mix currencies.
+Keep `clientId` and `secret` on the server.
 
-Exchange `client_id` and `secret` for a Bearer access token is handled by the
-SDK. There is no `X-API-KEY` header. Resend the same `reference` and
-`Idempotency-Key` only when retrying the *same* create (same body). When the body
-changes (new phone number, new currency) use a new `Idempotency-Key`; after a
-failed deposit also use a new `reference`, because a failed one stays reserved.
-Derive the key from your checkout session, not from the cart or order. Amounts are
-decimal strings; do not mix currencies.
-
-Verify inbound webhooks with
-`client.webhooks.verify(rawBody, signature, secret)`.
-
-Do not send merchant API keys to the browser.
-
-## Payment links
-
-Create a hosted payment page and send the returned `url` to your customer (API key
-scope `PAYMENT_LINK` required). Full guide: [docs/payment-links.md](docs/payment-links.md).
+Verify inbound webhooks on the raw request body:
 
 ```ts
-const link = await client.paymentLinks.create({
-  reference: "INV-2026-0042",
-  amount: "25.00",
-  currency: "USD",
-  expires_at: "2026-12-31T23:59:59Z",
-  single_use: true,
-  redirect_url: "https://shop.example.com/thanks",
-});
-console.log(link.url); // the customer pays here
-
-await client.paymentLinks.list({ status: "ACTIVE" });
-await client.paymentLinks.get(link.id);
-await client.paymentLinks.cancel(link.id);
-
-// On behalf of a seller (sends X-Merchant-Account):
-await client.paymentLinks.get(link.id, { merchantAccount: "<seller account id>" });
+const ok = client.webhooks.verify(rawBody, req.header("x-webhook-signature") ?? "", process.env.MM_WEBHOOK_SECRET ?? "");
 ```
 
-Failures throw `ApiException` (400 validation, 409 conflict such as a reused
-reference). Payments arrive as deposits and webhooks; read `status` with `get`.
+## Guides
+
+Detailed, per-flow guides (request and response fields, errors, a complete
+example each) are in [docs/](docs/README.md):
+
+| Flow | Guide |
+| --- | --- |
+| Credentials, token, scopes | [authentication](docs/authentication.md) |
+| Countries, providers, provider matching, lookup, limits | [countries and providers](docs/countries-and-providers.md), [customers](docs/customers.md), [amount limits](docs/amount-limits.md) |
+| Fees and pricing | [fees](docs/fees.md), [pricing](docs/pricing.md) |
+| Deposits, payouts, remittances, refunds | [deposits](docs/deposits.md), [payouts](docs/payouts.md), [remittances](docs/remittances.md), [refunds](docs/refunds.md) |
+| Status, polling, webhooks | [status](docs/status.md), [webhooks](docs/webhooks.md) |
+| Idempotency and errors | [idempotency](docs/idempotency.md), [errors](docs/errors.md) |
+| Payment links | [payment links](docs/payment-links.md) |
+| Balances, transactions, reports | [wallets and reports](docs/wallets-and-reports.md) |
+| Platforms and sellers (MainMoney Rails) | [MainMoney Rails](docs/mainmoney-rails.md) |
+| Browser checkout widget backend | [checkout widget proxy](docs/checkout-widget.md) |
+
+Platforms can act on behalf of a seller with `new Client({ ..., merchantAccount })` or
+a per-call `{ merchantAccount }` (sent as `X-Merchant-Account`).
 
 ## License
 

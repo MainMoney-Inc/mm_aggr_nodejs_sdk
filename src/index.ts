@@ -6,6 +6,7 @@ export {
   WebhookSignatureException,
 } from "./errors.js";
 export type { HttpClient, RequestOptions } from "./http/http-client.js";
+export type { AccountRequestOptions } from "./resources/resource.js";
 export type { JsonObject, JsonValue } from "./http/transport.js";
 
 export type {
@@ -18,4 +19,43 @@ export type {
   PaymentLinkStatus,
 } from "./resources/payment-links.js";
 
-export const VERSION = "0.2.0";
+export type {
+  PricingItem,
+  PricingList,
+  PricingQuery,
+} from "./resources/pricing.js";
+export type {
+  ReportProviderTotal,
+  ReportQuery,
+  ReportTopTransaction,
+  ReportVolumeByDay,
+  ReportsCharts,
+  ReportsSummary,
+} from "./resources/reports.js";
+export type {
+  KybDraftInput,
+  KybStatus,
+  KybUbo,
+  Seller,
+  SellerCaptureToken,
+  SellerCountry,
+  SellerCreateInput,
+  SellerDetail,
+  SellerKyb,
+  SellerKybStart,
+  SellerList,
+  SellerOnboardingLink,
+  SellerOnboardingLinkRevoked,
+  SellerType,
+  SellerUpdateInput,
+} from "./resources/sellers.js";
+export type { StatusOperationType } from "./resources/status.js";
+export type { TransactionListType } from "./resources/transactions.js";
+export type {
+  Transfer,
+  TransferCreateInput,
+  TransferDirection,
+  TransferListQuery,
+} from "./resources/transfers.js";
+
+export const VERSION = "0.2.1";

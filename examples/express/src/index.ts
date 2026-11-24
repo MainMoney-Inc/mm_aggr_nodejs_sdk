@@ -29,8 +29,22 @@ app.use(
     legacyHeaders: false,
   }),
 );
-app.use(cors({ origin: origins }));
-app.use(express.json());
+app.use(
+  cors({
+    origin: origins,
+    methods: ["GET", "POST", "OPTIONS"],
+    // The checkout widget sends only these two; list Authorization explicitly (a "*" does not cover it).
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
+// Keep the raw body: the webhook signature is computed over it, not over re-serialised JSON.
+app.use(
+  express.json({
+    verify: (req, _res, buf) => {
+      (req as unknown as { rawBody?: string }).rawBody = buf.toString("utf8");
+    },
+  }),
+);
 
 function bearerToken(header: string | undefined): string {
   if (header !== undefined && header.toLowerCase().startsWith("bearer ")) {
@@ -205,7 +219,7 @@ app.all(["/payments", "/payments/*path"], async (req, res) => {
 });
 
 app.post("/webhooks", (req, res) => {
-  const raw = JSON.stringify(req.body ?? {});
+  const raw = (req as unknown as { rawBody?: string }).rawBody ?? "";
   const signature = req.header("x-webhook-signature") ?? "";
   if (!getClient().webhooks.verify(raw, signature, process.env.MM_WEBHOOK_SECRET ?? "")) {
     res.status(400).json({ message: "Invalid signature" });

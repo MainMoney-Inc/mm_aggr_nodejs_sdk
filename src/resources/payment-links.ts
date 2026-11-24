@@ -1,6 +1,6 @@
 /** Payment link operations (API key scope PAYMENT_LINK). */
 
-import { Resource } from "./resource.js";
+import { Resource, type AccountRequestOptions } from "./resource.js";
 
 export type PaymentLinkStatus = "ACTIVE" | "PAID" | "EXPIRED" | "CANCELLED";
 export type PaymentLinkMethod = "card" | "mobile_money";
@@ -70,17 +70,15 @@ export interface PaymentLinkListQuery {
   search?: string;
 }
 
-export interface PaymentLinkRequestOptions {
-  /** Seller account id sent as X-Merchant-Account (MainMoney Rails only). */
-  merchantAccount?: string | null;
-}
+/** Same as {@link AccountRequestOptions}: `merchantAccount` is sent as X-Merchant-Account. */
+export type PaymentLinkRequestOptions = AccountRequestOptions;
 
 export class PaymentLinks extends Resource {
   create(payload: PaymentLinkCreateInput, options: PaymentLinkRequestOptions = {}): Promise<PaymentLink> {
     return this.transport.post(
       "payment-links/",
       { ...payload },
-      this.merchantHeaders(options.merchantAccount),
+      this.accountHeaders(options),
     ) as unknown as Promise<PaymentLink>;
   }
 
@@ -88,7 +86,7 @@ export class PaymentLinks extends Resource {
     return this.transport.get(
       "payment-links/",
       { ...query },
-      this.merchantHeaders(options.merchantAccount),
+      this.accountHeaders(options),
     ) as unknown as Promise<PaymentLinkPage>;
   }
 
@@ -96,7 +94,7 @@ export class PaymentLinks extends Resource {
     return this.transport.get(
       `payment-links/${encodeURIComponent(id)}/`,
       {},
-      this.merchantHeaders(options.merchantAccount),
+      this.accountHeaders(options),
     ) as unknown as Promise<PaymentLink>;
   }
 
@@ -104,14 +102,7 @@ export class PaymentLinks extends Resource {
     return this.transport.post(
       `payment-links/${encodeURIComponent(id)}/cancel/`,
       {},
-      this.merchantHeaders(options.merchantAccount),
+      this.accountHeaders(options),
     ) as unknown as Promise<PaymentLink>;
-  }
-
-  private merchantHeaders(merchantAccount?: string | null): Record<string, string> {
-    if (merchantAccount === undefined || merchantAccount === null || merchantAccount === "") {
-      return {};
-    }
-    return { "X-Merchant-Account": merchantAccount };
   }
 }
