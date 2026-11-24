@@ -11,6 +11,7 @@ import { Countries } from "./resources/countries.js";
 import { Customers } from "./resources/customers.js";
 import { Deposits } from "./resources/deposits.js";
 import { Fees } from "./resources/fees.js";
+import { PaymentLinks } from "./resources/payment-links.js";
 import { Payouts } from "./resources/payouts.js";
 import { Providers } from "./resources/providers.js";
 import { Refunds } from "./resources/refunds.js";
@@ -35,6 +36,7 @@ export class Client {
   static readonly TEST_BASE_URI = "https://testaggregator.mainmoney.net/api/v1/";
 
   readonly deposits: Deposits;
+  readonly paymentLinks: PaymentLinks;
   readonly payouts: Payouts;
   readonly remittances: Remittances;
   readonly refunds: Refunds;
@@ -66,6 +68,7 @@ export class Client {
     const transport = new Transport(http, this._baseUri, tokens);
 
     this.deposits = new Deposits(transport);
+    this.paymentLinks = new PaymentLinks(transport);
     this.payouts = new Payouts(transport);
     this.remittances = new Remittances(transport);
     this.refunds = new Refunds(transport);

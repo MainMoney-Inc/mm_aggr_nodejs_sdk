@@ -63,6 +63,33 @@ Verify inbound webhooks with
 
 Do not send merchant API keys to the browser.
 
+## Payment links
+
+Create a hosted payment page and send the returned `url` to your customer (API key
+scope `PAYMENT_LINK` required). Full guide: [docs/payment-links.md](docs/payment-links.md).
+
+```ts
+const link = await client.paymentLinks.create({
+  reference: "INV-2026-0042",
+  amount: "25.00",
+  currency: "USD",
+  expires_at: "2026-12-31T23:59:59Z",
+  single_use: true,
+  redirect_url: "https://shop.example.com/thanks",
+});
+console.log(link.url); // the customer pays here
+
+await client.paymentLinks.list({ status: "ACTIVE" });
+await client.paymentLinks.get(link.id);
+await client.paymentLinks.cancel(link.id);
+
+// On behalf of a seller (sends X-Merchant-Account):
+await client.paymentLinks.get(link.id, { merchantAccount: "<seller account id>" });
+```
+
+Failures throw `ApiException` (400 validation, 409 conflict such as a reused
+reference). Payments arrive as deposits and webhooks; read `status` with `get`.
+
 ## License
 
 Copyright (c) 2026 MainMoney SARL. Licensed under the MIT License. See [LICENSE](LICENSE).

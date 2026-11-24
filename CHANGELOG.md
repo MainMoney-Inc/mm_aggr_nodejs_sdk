@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.2.0
+
+- Added `client.paymentLinks` (`create`, `list`, `get`, `cancel`) for the Payment Links API; requires an API key with the `PAYMENT_LINK` scope.
+- Payment link calls accept `{ merchantAccount }` to send `X-Merchant-Account` and act on behalf of a seller.
+- Exported the `PaymentLink*` types. `VERSION` now matches the package version.
+
 ## 0.1.3
 
 - Security: base URI and path trimming run in linear time (CodeQL `js/polynomial-redos`).

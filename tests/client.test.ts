@@ -256,3 +256,100 @@ describe("Client", () => {
     expect(mock.history[1].uri).toContain("/manage/general/checkout-preferences/");
   });
 });
+
+describe("paymentLinks", () => {
+  const link = {
+    id: "9f1c0a52-0000-4000-8000-000000000001",
+    reference: "INV-1",
+    amount: "25.00",
+    currency: "USD",
+    status: "ACTIVE",
+    url: "https://pay.example.test/l/abc",
+    account_id: null,
+  };
+
+  it("creates a link, returns url and sends no seller header by default", async () => {
+    const { client, mock } = clientWithMock([tokenResponse(), new HttpResponse(201, JSON.stringify(link))]);
+
+    const created = await client.paymentLinks.create({
+      reference: "INV-1",
+      amount: "25.00",
+      currency: "USD",
+      single_use: true,
+    });
+
+    expect(created.url).toBe(link.url);
+    const call = mock.history[1];
+    expect(call.method).toBe("POST");
+    expect(call.uri).toBe("https://example.test/api/v1/payment-links/");
+    expect(call.options.json).toMatchObject({ reference: "INV-1", single_use: true });
+    expect(call.options.headers?.["X-Merchant-Account"]).toBeUndefined();
+    expect(call.options.headers?.["Idempotency-Key"]).toBeUndefined();
+  });
+
+  it("sends X-Merchant-Account on behalf of a seller", async () => {
+    const { client, mock } = clientWithMock([tokenResponse(), new HttpResponse(201, JSON.stringify(link))]);
+
+    await client.paymentLinks.create(
+      { reference: "INV-1", amount: "25.00", currency: "USD" },
+      { merchantAccount: "acct_1" },
+    );
+
+    expect(mock.history[1].options.headers?.["X-Merchant-Account"]).toBe("acct_1");
+  });
+
+  it("lists with a status filter without unwrapping the page", async () => {
+    const { client, mock } = clientWithMock([
+      tokenResponse(),
+      new HttpResponse(200, JSON.stringify({ count: 1, next: null, previous: null, results: [link] })),
+    ]);
+
+    const page = await client.paymentLinks.list({ status: "ACTIVE" }, { merchantAccount: "acct_1" });
+
+    expect(page.results[0].id).toBe(link.id);
+    const call = mock.history[1];
+    expect(call.method).toBe("GET");
+    expect(call.options.query).toEqual({ status: "ACTIVE" });
+    expect(call.options.headers?.["X-Merchant-Account"]).toBe("acct_1");
+  });
+
+  it("gets and cancels by id", async () => {
+    const { client, mock } = clientWithMock([
+      tokenResponse(),
+      new HttpResponse(200, JSON.stringify(link)),
+      new HttpResponse(200, JSON.stringify({ ...link, status: "CANCELLED" })),
+    ]);
+
+    await client.paymentLinks.get(link.id);
+    const cancelled = await client.paymentLinks.cancel(link.id);
+
+    expect(mock.history[1].method).toBe("GET");
+    expect(mock.history[1].uri).toBe(`https://example.test/api/v1/payment-links/${link.id}/`);
+    expect(mock.history[2].method).toBe("POST");
+    expect(mock.history[2].uri).toBe(`https://example.test/api/v1/payment-links/${link.id}/cancel/`);
+    expect(cancelled.status).toBe("CANCELLED");
+  });
+
+  it("surfaces 409 conflicts as ApiException", async () => {
+    const { client } = clientWithMock([
+      tokenResponse(),
+      new HttpResponse(409, JSON.stringify({ detail: "Link already paid" })),
+    ]);
+
+    await expect(client.paymentLinks.cancel(link.id)).rejects.toMatchObject({
+      statusCode: 409,
+      message: "Link already paid",
+    });
+  });
+
+  it("surfaces 400 validation errors as ApiException", async () => {
+    const { client } = clientWithMock([
+      tokenResponse(),
+      new HttpResponse(400, JSON.stringify({ success: false, response_code: 400, message: "Invalid amount", response_data: {} })),
+    ]);
+
+    await expect(
+      client.paymentLinks.create({ reference: "X", amount: "bad", currency: "USD" }),
+    ).rejects.toBeInstanceOf(ApiException);
+  });
+});

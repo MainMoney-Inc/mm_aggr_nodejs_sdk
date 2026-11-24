@@ -2,3 +2,5 @@
 
 User install guide: [../README.md](../README.md).
 Contributor setup: [../CONTRIBUTING.md](../CONTRIBUTING.md).
+
+- [Payment links](payment-links.md)
